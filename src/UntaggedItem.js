@@ -6,6 +6,7 @@ const labels = [
   'Richard',
   'Thatch',
   'Langos',
+  'VW'
 ];
 
 function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing }) {
@@ -25,7 +26,7 @@ function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel,
       {
         !tagging ? <div>
           <button type="button" className="btn btn-primary btn-lg tag" onClick={onTag}>Tag</button>
-          <button type="button" className="btn btn-danger btn-lg negative" onClick={() => onNegative(filename)}>Negative</button>          
+          <button type="button" className="btn btn-danger btn-lg negative" onClick={() => onNegative(filename)}>Negative</button>
         </div> : <div>
           <button type="button" className="btn btn-primary btn-lg confirm" onClick={onCancel}>Cancel</button>
         </div>
@@ -58,6 +59,3 @@ export default class UntaggedItemContainer extends Component {
     />;
   }
 }
-
-
-
