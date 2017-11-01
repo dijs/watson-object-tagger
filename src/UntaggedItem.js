@@ -9,7 +9,9 @@ const labels = [
 ];
 
 function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing }) {
-  const [, label, timestamp] = filename.match(/(\w+)-(\d+)/); 
+  const [label, timestamp, left, right, top, bottom] = filename
+    .substring(0, filename.indexOf('.'))
+    .split('_');
   return <div className={`card animated bounceIn ${removing && 'rotateOutUpRight'}`}>
     <img className="card-img-top" src={`${process.env.REACT_APP_API_URL}/untagged/${filename}`} alt={label} />
     <div className="card-body">
