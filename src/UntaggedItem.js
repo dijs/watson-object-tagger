@@ -9,12 +9,27 @@ const labels = [
   'VW'
 ];
 
+const fullWidth = 640;
+const fullHeight = 480;
+
 function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing }) {
   const [label, timestamp, left, right, top, bottom] = filename
     .substring(0, filename.indexOf('.'))
     .split('_');
+  const width = right - left;
+  const height = bottom - top;
   return <div className={`card animated bounceIn ${removing && 'rotateOutUpRight'}`}>
-    <img className="card-img-top" src={`${process.env.REACT_APP_API_URL}/untagged/${filename}`} alt={label} />
+    <div style={{ position: 'relative' }}>
+      <img className="card-img-top" src={`${process.env.REACT_APP_API_URL}/untagged/${filename}`} alt={label} />
+      <div style={{
+        position: 'absolute',
+        top: `${top / fullHeight * 100}%`,
+        left: `${left / fullWidth * 100}%`,
+        width: `${width / fullWidth * 100}%`,
+        height: `${height / fullHeight * 100}%`,
+        backgroundColor: 'rgba(255, 0, 0, 0.25)',
+      }} />      
+    </div>
     <div className="card-body">
       <h4 className="card-title">"{label}"</h4>
       <p className="card-text">{moment(parseInt(timestamp, 10)).format('dddd, hA')}</p>
