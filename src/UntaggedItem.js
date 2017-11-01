@@ -8,18 +8,18 @@ const labels = [
   'Langos',
 ];
 
-function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel }) {
+function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing }) {
   const [, label, timestamp] = filename.match(/(\w+)-(\d+)/); 
-  return <div className="card">
+  return <div className={`card animated bounceIn ${removing && 'rotateOutUpRight'}`}>
     <img className="card-img-top" src={`${process.env.REACT_APP_API_URL}/untagged/${filename}`} alt={label} />
     <div className="card-body">
       <h4 className="card-title">"{label}"</h4>
       <p className="card-text">{moment(parseInt(timestamp, 10)).format('dddd, hA')}</p>
-      <div className={`form-group labels ${tagging ? 'tagging' : ''}`}>
+      {tagging && <div className="form-group animated lightSpeedIn">
         <ul className="list-group list-group-flush">
           {labels.map(label => <li key={label} className="list-group-item" onClick={() => onLabel(filename, label)}>{label}</li>)}
         </ul>
-      </div>
+      </div>}
       {
         !tagging ? <div>
           <button type="button" className="btn btn-primary btn-lg tag" onClick={onTag}>Tag</button>
@@ -36,17 +36,23 @@ export default class UntaggedItemContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tagging: false
+      tagging: false,
+      removing: false,
     };
+  }
+  delayRemove = fn => (...args) => {
+    this.setState({ removing: true });
+    setTimeout(() => fn(...args), 500);
   }
   render() {
     return <UntaggedItem
       {...this.props}
       tagging={this.state.tagging}
+      removing={this.state.removing}
       onTag={() => this.setState({ tagging: true })}
       onCancel={() => this.setState({ tagging: false })}
-      onLabel={this.props.onLabel}
-      onNegative={this.props.onNegative}
+      onLabel={this.delayRemove(this.props.onLabel)}
+      onNegative={this.delayRemove(this.props.onNegative)}
     />;
   }
 }
