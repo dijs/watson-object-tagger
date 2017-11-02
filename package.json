@@ -6,6 +6,7 @@
     "moment": "^2.19.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-lazyload": "^2.3.0",
     "react-scripts": "1.0.15"
   },
   "scripts": {

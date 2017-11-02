@@ -1,5 +1,6 @@
 import React,  { Component } from 'react';
 import moment from 'moment';
+import LazyLoad from 'react-lazyload';
 
 const labels = [
   'Heather',
@@ -20,7 +21,9 @@ function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel,
   const height = bottom - top;
   return <div className={`card animated bounceIn ${removing && 'rotateOutUpRight'}`}>
     <div style={{ position: 'relative' }}>
-      <img className="card-img-top" src={`${process.env.REACT_APP_API_URL}/untagged/${filename}`} alt={label} />
+      <LazyLoad>
+        <img className="card-img-top" src={`${process.env.REACT_APP_API_URL}/untagged/${filename}`} alt={label} />
+      </LazyLoad>
       <div style={{
         position: 'absolute',
         top: `${top / fullHeight * 100}%`,
