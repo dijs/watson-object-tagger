@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import UntaggedItemContainer from './UntaggedItemContainer';
+import UntaggedItem from './UntaggedItem';
 import './App.css';
 
 class App extends Component {
@@ -54,7 +54,7 @@ class App extends Component {
     }
     const items = this.state.filenames
       .map(filename => {
-        return <UntaggedItemContainer key={filename} filename={filename} labels={this.state.labels} onLabel={this.onLabel} onNegative={this.onNegative} onAddLabel={this.onAddLabel} />;
+        return <UntaggedItem key={filename} filename={filename} labels={this.state.labels} onLabel={this.onLabel} onNegative={this.onNegative} onAddLabel={this.onAddLabel} />;
       });
     return (
       <div className="App">

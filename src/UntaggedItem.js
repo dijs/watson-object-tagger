@@ -6,13 +6,21 @@ import Labels from './Labels';
 const fullWidth = 640;
 const fullHeight = 480;
 
-function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing, labels, onAddLabel }) {
+function itemTitle(guess, score, label) {
+  if (score > 0.8) {
+    return `${guess} with ${Math.round(score * 100)}%`;
+  }
+  return label;
+}
+
+function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing, labels, onAddLabel, guess, score }) {
   const [label, timestamp, left, right, top, bottom] = filename
     .substring(0, filename.indexOf('.'))
     .split('_');
   const width = right - left;
   const height = bottom - top;
-  return <div className={`card animated bounceIn ${removing && 'rotateOutUpRight'}`}>
+  const title = itemTitle(guess, score, label);
+  return <div className="card">
     <div style={{ position: 'relative' }}>
       <LazyLoad>
         <img className="card-img-top" src={`${process.env.REACT_APP_API_URL}/untagged/${filename}`} alt={label} />
@@ -24,12 +32,12 @@ function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel,
         width: `${width / fullWidth * 100}%`,
         height: `${height / fullHeight * 100}%`,
         backgroundColor: 'rgba(255, 0, 0, 0.25)',
-      }} />      
+      }} />
     </div>
     <div className="card-body">
-      <h4 className="card-title">"{label}"</h4>
+      <h4 className="card-title">{title}</h4>
       <p className="card-text">{moment(parseInt(timestamp, 10)).format('dddd, hA')}</p>
-      {tagging && <div className="form-group animated lightSpeedIn">
+      {tagging && <div className="form-group">
         <Labels
           labels={labels}
           onSelect={selectedLabel => onLabel(filename, selectedLabel)}
@@ -54,7 +62,14 @@ export default class UntaggedItemContainer extends Component {
     this.state = {
       tagging: false,
       removing: false,
+      guess: undefined,
+      score: 0
     };
+  }
+  componentDidMount() {
+    fetch(`${process.env.REACT_APP_API_URL}/recognize/${this.props.filename}`)
+      .then(info => this.setState(info))
+      .catch(err => this.setState({ error: err.message }));
   }
   delayRemove = fn => (...args) => {
     this.setState({ removing: true });
@@ -65,6 +80,8 @@ export default class UntaggedItemContainer extends Component {
       {...this.props}
       tagging={this.state.tagging}
       removing={this.state.removing}
+      guess={this.state.guess}
+      score={this.state.score}
       onTag={() => this.setState({ tagging: true })}
       onCancel={() => this.setState({ tagging: false })}
       onLabel={this.delayRemove(this.props.onLabel)}
