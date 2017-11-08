@@ -1,19 +1,12 @@
 import React,  { Component } from 'react';
 import moment from 'moment';
 import LazyLoad from 'react-lazyload';
-
-const labels = [
-  'Heather',
-  'Richard',
-  'Thatch',
-  'Langos',
-  'VW'
-];
+import Labels from './Labels';
 
 const fullWidth = 640;
 const fullHeight = 480;
 
-function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing }) {
+function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing, labels, onAddLabel }) {
   const [label, timestamp, left, right, top, bottom] = filename
     .substring(0, filename.indexOf('.'))
     .split('_');
@@ -37,9 +30,11 @@ function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel,
       <h4 className="card-title">"{label}"</h4>
       <p className="card-text">{moment(parseInt(timestamp, 10)).format('dddd, hA')}</p>
       {tagging && <div className="form-group animated lightSpeedIn">
-        <ul className="list-group list-group-flush">
-          {labels.map(label => <li key={label} className="list-group-item" onClick={() => onLabel(filename, label)}>{label}</li>)}
-        </ul>
+        <Labels
+          labels={labels}
+          onSelect={selectedLabel => onLabel(filename, selectedLabel)}
+          onAdd={onAddLabel}
+        />
       </div>}
       {
         !tagging ? <div>
