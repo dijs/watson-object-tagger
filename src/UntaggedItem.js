@@ -13,7 +13,7 @@ function itemTitle(guess, score, label) {
   return label;
 }
 
-function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing, labels, onAddLabel, guess, score, onRecognize }) {
+function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing, labels, onAddLabel, guess, score, onRecognize, processing }) {
   const [label, timestamp, left, right, top, bottom] = filename
     .substring(0, filename.indexOf('.'))
     .split('_');
@@ -40,7 +40,7 @@ function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel,
       }} />
     </div>
     <div className="card-body">
-      <h4 className="card-title">{title}</h4>
+      <b className="card-title">{processing ? 'Processing...' : title}</b>
       <p className="card-text">{moment(parseInt(timestamp, 10)).format('dddd, hA')}</p>
       {tagging && <div className="form-group">
         <Labels
@@ -68,14 +68,16 @@ export default class UntaggedItemContainer extends Component {
       tagging: false,
       removing: false,
       guess: null,
-      score: 0
+      score: 0,
+      processing: false,
     };
   }
   recognize = () => {
+    this.setState({ processing: true });
     fetch(`${process.env.REACT_APP_API_URL}/recognize/${this.props.filename}`)
       .then(res => res.json())
-      .then(info => this.setState(info))
-      .catch(err => this.setState({ error: err.message }));
+      .then(({ guess, score }) => this.setState({ guess, score, processing: false }))
+      .catch(err => this.setState({ error: err.message, processing: false }));
   }
   delayRemove = fn => (...args) => {
     this.setState({ removing: true });
@@ -86,6 +88,7 @@ export default class UntaggedItemContainer extends Component {
       {...this.props}
       tagging={this.state.tagging}
       removing={this.state.removing}
+      processing={this.state.processing}
       guess={this.state.guess}
       score={this.state.score}
       onTag={() => this.setState({ tagging: true })}
