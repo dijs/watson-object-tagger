@@ -13,7 +13,7 @@ function itemTitle(guess, score, label) {
   return label;
 }
 
-function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing, labels, onAddLabel, guess, score }) {
+function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel, removing, labels, onAddLabel, guess, score, onRecognize }) {
   const [label, timestamp, left, right, top, bottom] = filename
     .substring(0, filename.indexOf('.'))
     .split('_');
@@ -23,7 +23,12 @@ function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, onCancel,
   return <div className="card">
     <div style={{ position: 'relative' }}>
       <LazyLoad>
-        <img className="card-img-top" src={`${process.env.REACT_APP_API_URL}/untagged/${filename}`} alt={label} />
+        <img
+          className="card-img-top"
+          src={`${process.env.REACT_APP_API_URL}/untagged/${filename}`}
+          alt={label}
+          onLoad={onRecognize}
+        />
       </LazyLoad>
       <div style={{
         position: 'absolute',
@@ -62,12 +67,13 @@ export default class UntaggedItemContainer extends Component {
     this.state = {
       tagging: false,
       removing: false,
-      guess: undefined,
+      guess: null,
       score: 0
     };
   }
-  componentDidMount() {
+  recognize = () => {
     fetch(`${process.env.REACT_APP_API_URL}/recognize/${this.props.filename}`)
+      .then(res => res.json())
       .then(info => this.setState(info))
       .catch(err => this.setState({ error: err.message }));
   }
@@ -86,6 +92,7 @@ export default class UntaggedItemContainer extends Component {
       onCancel={() => this.setState({ tagging: false })}
       onLabel={this.delayRemove(this.props.onLabel)}
       onNegative={this.delayRemove(this.props.onNegative)}
+      onRecognize={this.recognize}
     />;
   }
 }
