@@ -13,6 +13,13 @@
     "start": "react-scripts start",
     "build": "export REACT_APP_API_URL=http://richard.crushftp.com:5567 && react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "storybook": "REACT_APP_API_URL=http://richard.crushftp.com:5567 start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
+  },
+  "devDependencies": {
+    "@storybook/react": "^3.2.15",
+    "@storybook/addon-actions": "^3.2.15",
+    "@storybook/addon-links": "^3.2.15"
   }
 }
