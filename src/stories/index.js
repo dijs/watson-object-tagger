@@ -8,6 +8,7 @@ import '../App.css';
 import Labels from '../Labels';
 import AddLabel from '../AddLabel';
 import { UntaggedItem } from '../UntaggedItem';
+import ReactSwipe from 'react-swipe'; 
 
 const fewLabels = ['Thatch', 'Richard', 'Heather', 'Langos'];
 
@@ -62,4 +63,12 @@ storiesOf('Untagged Items', module)
       <UntaggedItem {...normalUntaggedProps} />
       <UntaggedItem {...normalUntaggedProps} />
     </div>;
+  })
+  .add('with swipe', () => {
+    return <ReactSwipe className="carousel" swipeOptions={{continuous: false}}>
+      <UntaggedItem {...normalUntaggedProps} />
+      <UntaggedItem {...normalUntaggedProps} />
+      <UntaggedItem {...normalUntaggedProps} />
+      <UntaggedItem {...normalUntaggedProps} />
+    </ReactSwipe>;
   });

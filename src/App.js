@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import UntaggedItem from './UntaggedItem';
+import Carousel from './Carousel';
 import './App.css';
 
 class App extends Component {
@@ -25,13 +25,11 @@ class App extends Component {
   onLabel = (filename, label) => {
     this.setState({ error: null });
     fetch(`${process.env.REACT_APP_API_URL}/tag/${filename}/${label}`)
-      .then(() => this.setState({ filenames: this.state.filenames.filter(n => n !== filename) }))
       .catch(err => this.setState({ error: err.message }));
   }
   onNegative = (filename) => {
     this.setState({ error: null });
     fetch(`${process.env.REACT_APP_API_URL}/negative/${filename}`)
-      .then(() => this.setState({ filenames: this.state.filenames.filter(n => n !== filename) }))
       .catch(err => this.setState({ error: err.message }));
   }
   onAddLabel = (label) => {
@@ -46,21 +44,14 @@ class App extends Component {
     this.update();
   }
   render() {
-    if (this.state.error) {
-      return <div className="alert alert-danger" role="alert"><b>Error:</b> {this.state.error}</div>;
-    }
-    if (!this.state.filenames.length) {
-      return <div className="alert alert-success" role="alert">All tagged, great job!</div>;
-    }
-    const items = this.state.filenames
-      .map(filename => {
-        return <UntaggedItem key={filename} filename={filename} labels={this.state.labels} onLabel={this.onLabel} onNegative={this.onNegative} onAddLabel={this.onAddLabel} />;
-      });
-    return (
-      <div className="App">
-        {items}
-      </div>
-    );
+    return <Carousel
+      filenames={this.state.filenames}
+      labels={this.state.labels}
+      error={this.state.error}
+      onLabel={this.onLabel}
+      onNegative={this.onNegative}
+      onAddLabel={this.onAddLabel}
+    />;
   }
 }
 

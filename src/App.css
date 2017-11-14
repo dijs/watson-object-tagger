@@ -1,21 +1,4 @@
 body {
-  margin: 10px;
-}
-
-.App {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: calc(33.3% - 6.66px) calc(33.3% - 6.66px) calc(33.3% - 6.66px);
-}
-
-@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
-  .App {
-    grid-template-columns: 100%;
-  }
-}
-
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
-  .App {
-    grid-template-columns: calc(50% - 5px) calc(50% - 5px);
-  }
+  margin-left: 10px;
+  margin-right: 10px;
 }

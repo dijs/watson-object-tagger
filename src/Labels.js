@@ -12,7 +12,7 @@ export default function Labels({ labels, onSelect, type = 'Buttons' }) {
         labels.map(label => {
           return <button
             key={label}
-            className="btn btn-primary"
+            className="btn btn-primary btn-sm"
             style={{ marginRight: '10px', marginBottom: '10px' }}
             onClick={() => onSelect(label)}
             >

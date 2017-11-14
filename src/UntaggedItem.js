@@ -1,6 +1,5 @@
 import React,  { Component } from 'react';
 import moment from 'moment';
-import LazyLoad from 'react-lazyload';
 import Labels from './Labels';
 import AddLabel from './AddLabel';
 
@@ -25,14 +24,11 @@ export function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, la
   const title = itemTitle(guess, score, label);
   return <div className="card">
     <div style={{ position: 'relative' }}>
-      <LazyLoad>
-        <img
-          className="card-img-top"
-          src={`${apiUrl}/untagged/${filename}`}
-          alt={label}
-          onLoad={onRecognize}
-        />
-      </LazyLoad>
+      <img
+        className="card-img-top"
+        src={`${apiUrl}/untagged/${filename}`}
+        alt={label}
+      />
       <div style={{
         position: 'absolute',
         top: `${top / fullHeight * 100}%`,
@@ -43,8 +39,16 @@ export function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, la
       }} />
     </div>
     <div className="card-body">
-      <b className="card-title">{processing ? 'Processing...' : title}</b>
-      <p className="card-text">{moment(parseInt(timestamp, 10)).format('dddd, hA')}</p>
+      <div className="row">
+        <div className="col-8">
+          <b className="card-title">{processing ? 'Processing...' : title}</b>
+          <p className="card-text">{moment(parseInt(timestamp, 10)).format('dddd, hA')}</p>          
+        </div>
+        <div className="col-4">
+          <button type="button" className="btn btn-danger negative" onClick={() => onNegative(filename)}>Negative</button>
+        </div>
+      </div>
+      <br />
       <div className="form-group">
         <Labels
           labels={labels}
@@ -52,7 +56,6 @@ export function UntaggedItem({ filename, tagging, onTag, onLabel, onNegative, la
         />
         <AddLabel onAdd={onAddLabel} />
       </div>
-      <button type="button" className="btn btn-danger btn-lg negative" onClick={() => onNegative(filename)}>Negative</button>
     </div>
   </div>;
 }
@@ -66,15 +69,14 @@ export default class UntaggedItemContainer extends Component {
       processing: false,
     };
   }
-  recognize = () => {
-    this.setState({ processing: true });
-    fetch(`${apiUrl}/recognize/${this.props.filename}`)
-      .then(res => res.json())
-      .then(({ guess, score }) => this.setState({ guess, score, processing: false }))
-      .catch(err => this.setState({ error: err.message, processing: false }));
-  }
-  delayRemove = fn => (...args) => {
-    setTimeout(() => fn(...args), 500);
+  componentDidUpdate() {
+    if (this.props.active && !this.state.processing && !this.state.guess) {
+      this.setState({ processing: true });
+      fetch(`${apiUrl}/recognize/${this.props.filename}`)
+        .then(res => res.json())
+        .then(({ guess, score }) => this.setState({ guess, score, processing: false }))
+        .catch(err => this.setState({ error: err.message, processing: false }));
+    }
   }
   render() {
     return <UntaggedItem
@@ -82,9 +84,8 @@ export default class UntaggedItemContainer extends Component {
       processing={this.state.processing}
       guess={this.state.guess}
       score={this.state.score}
-      onLabel={this.delayRemove(this.props.onLabel)}
-      onNegative={this.delayRemove(this.props.onNegative)}
-      onRecognize={this.recognize}
+      onLabel={this.props.onLabel}
+      onNegative={this.props.onNegative}
     />;
   }
 }

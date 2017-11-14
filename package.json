@@ -1,20 +1,20 @@
 {
   "name": "watson-object-tagger",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "moment": "^2.19.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-lazyload": "^2.3.0",
-    "react-scripts": "1.0.15"
+    "react-scripts": "1.0.15",
+    "react-swipe": "^5.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "export REACT_APP_API_URL=http://richard.crushftp.com:5567 && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "storybook": "REACT_APP_API_URL=http://richard.crushftp.com:5567 start-storybook -p 9009 -s public",
+    "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public"
   },
   "devDependencies": {
