@@ -12,6 +12,15 @@ function preloadImage(src) {
   nextImage.onload = () => log('Preloaded', src);
 }
 
+const getTimestamp = filename => {
+  const [, timestamp] = filename
+    .substring(0, filename.indexOf('.'))
+    .split('_');
+  return parseInt(timestamp, 10);
+};
+
+const byTime = (a, b) => getTimestamp(b) - getTimestamp(a);
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -26,7 +35,7 @@ class App extends Component {
     this.setState({ error: null });
     fetch(`${process.env.REACT_APP_API_URL}/untagged`)
       .then(res => res.json())
-      .then(filenames => this.setState({ filenames }))
+      .then(filenames => this.setState({ filenames: filenames.sort(byTime) }))
       .then(() => {
         preloadImage(this.state.filenames[1]);
         preloadImage(this.state.filenames[2]);
